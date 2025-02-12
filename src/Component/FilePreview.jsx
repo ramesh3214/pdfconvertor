@@ -83,7 +83,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
       return (
         <div className="w-full h-full  overflow-hidden ">
           <Worker
-            workerUrl={`https://unpkg.com/pdfjs-dist@2.8.335/build/pdf.worker.min.js`}
+            workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
           >
             <div className="w-full h-full">
               <Viewer fileUrl={convertedPreview || selectedFile.preview} />
