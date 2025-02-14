@@ -43,6 +43,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
               withCredentials: true,
             }
           );
+          
           if (response.data.imageUrl) {
             const url = `https://fileuploadbackend-iwbq.onrender.com${response.data.imageUrl}`;
             setConvertedPreview(url);
