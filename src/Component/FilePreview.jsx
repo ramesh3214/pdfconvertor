@@ -43,7 +43,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
               withCredentials: true,
             }
           );
-
+          
           if (response.data.imageUrl) {
             const url = `https://fileuploadbackend-iwbq.onrender.com${response.data.imageUrl}`;
             setConvertedPreview(url);
@@ -69,21 +69,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
   const renderPreview = () => {
     if (!selectedFile || !selectedFile.file) return null;
 
-    if (loadingConversion) {
-      return (
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <FaSpinner className="animate-spin text-indigo-500 w-12 h-12" />
-          <p className="text-gray-600 text-lg font-semibold">
-            Converting file...
-          </p>
-          <p className="text-sm text-gray-400">
-            Please wait while we process your file.
-          </p>
-        </div>
-      );
-    }
-
-
+    // For image files, display the original preview
     if (selectedFile.file.type.startsWith("image/")) {
       return (
         <div className="flex items-center justify-center p-6">
@@ -96,7 +82,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
         </div>
       );
     }
-
+    // For PDFs (or if we have a converted preview) display the converted image
     if (selectedFile.file.type === "application/pdf") {
       if (convertedPreview) {
         return (
@@ -111,22 +97,37 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
         );
       }
     }
-
-  
-    return (
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <FaTimesCircle className="w-16 h-16 text-red-400" />
-        <p className="text-xl font-bold text-gray-700">Conversion failed</p>
-        <p className="text-sm text-gray-500 text-center">
-          We couldn’t convert this file format. Please try another file.
-        </p>
-      </div>
-    );
+    
+    else if (loadingConversion) {
+      return (
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <FaSpinner className="animate-spin text-indigo-500 w-12 h-12" />
+          <p className="text-gray-600 text-lg font-semibold">
+            Converting file...
+          </p>
+          <p className="text-sm text-gray-400">
+            Please wait while we process your file.
+          </p>
+        </div>
+      );
+    }
+    // In case conversion fails, display an error message
+    else {
+      return (
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <FaTimesCircle className="w-16 h-16 text-red-400" />
+          <p className="text-xl font-bold text-gray-700">Conversion failed</p>
+          <p className="text-sm text-gray-500 text-center">
+            We couldn’t convert this file format. Please try another file.
+          </p>
+        </div>
+      );
+    }
   };
 
   return (
     <div className="w-full h-full flex flex-col bg-white rounded-xl shadow-2xl overflow-hidden">
-      
+      {/* Header */}
       <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600">
         <div className="flex-1">
           <h2 className="text-xl font-semibold text-white truncate">
@@ -163,7 +164,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           </button>
         </div>
       </div>
-    
+      {/* Preview Area */}
       <div className="flex-grow flex items-center justify-center p-4 bg-gray-50">
         <div className="w-full max-w-4xl transition-transform duration-300">
           {renderPreview()}
