@@ -83,21 +83,19 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
       );
     }
     // For PDFs (or if we have a converted preview) display the converted image
-    if (selectedFile.file.type === "application/pdf") {
-      if (convertedPreview) {
-        return (
-          <div className="flex items-center justify-center p-6">
-            <img
-              src={convertedPreview}
-              alt="Converted Preview"
-              className="max-h-full max-w-full object-contain rounded-xl shadow-xl transition-transform duration-300 hover:scale-105"
-              style={style}
-            />
-          </div>
-        );
-      }
+    else if (selectedFile.file.type === "application/pdf" || convertedPreview) {
+      return (
+        <div className="flex items-center justify-center p-6">
+          <img
+            src={convertedPreview || selectedFile.preview}
+            alt="Converted Preview"
+            className="max-h-full max-w-full object-contain rounded-xl shadow-xl transition-transform duration-300 hover:scale-105"
+            style={style}
+          />
+        </div>
+      );
     }
-    
+    // While converting, show a spinner and friendly text
     else if (loadingConversion) {
       return (
         <div className="flex flex-col items-center justify-center space-y-4">
