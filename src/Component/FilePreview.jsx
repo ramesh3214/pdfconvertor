@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from "react";
-import { 
-  FaFileAlt, 
-  FaCog, 
-  FaSpinner, 
-  FaTimesCircle, 
-  FaDownload 
+import {
+  FaFileAlt,
+  FaCog,
+  FaSpinner,
+  FaTimesCircle,
+  FaDownload,
 } from "react-icons/fa";
 import axios from "axios";
 
@@ -13,7 +12,9 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
   const [convertedPreview, setConvertedPreview] = useState(null);
   const [loadingConversion, setLoadingConversion] = useState(false);
 
-  const cacheKey = selectedFile?.file ? `converted_${selectedFile.file.name}` : null;
+  const cacheKey = selectedFile?.file
+    ? `converted_${selectedFile.file.name}`
+    : null;
 
   useEffect(() => {
     if (selectedFile?.file) {
@@ -23,7 +24,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
         setLoadingConversion(false);
         return;
       }
-      
+
       setConvertedPreview(null);
       setLoadingConversion(true);
 
@@ -33,7 +34,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           formData.append("file", selectedFile.file);
 
           const response = await axios.post(
-            "https://fileuploadbackend-3rs9.onrender.com/upload",
+            "https://fileuploadbackend-iwbq.onrender.com/upload",
             formData,
             {
               headers: {
@@ -43,8 +44,9 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
             }
           );
           if (response.data.imageUrl) {
-            setConvertedPreview(response.data.imageUrl);
-            if (cacheKey) localStorage.setItem(cacheKey, response.data.imageUrl);
+            const url = `https://fileuploadbackend-iwbq.onrender.com${response.data.imageUrl}`;
+            setConvertedPreview(url);
+            if (cacheKey) localStorage.setItem(cacheKey, url);
           }
         } catch (error) {
           console.error("File conversion failed", error);
@@ -58,7 +60,8 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
   }, [selectedFile, cacheKey]);
 
   const style = {
-    transform: selectedFile?.orientation === "landscape" ? "rotate(90deg)" : "none",
+    transform:
+      selectedFile?.orientation === "landscape" ? "rotate(90deg)" : "none",
     filter: selectedFile?.color === "bw" ? "grayscale(100%)" : "none",
   };
 
@@ -77,7 +80,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           />
         </div>
       );
-    } 
+    }
     // For PDFs (or if we have a converted preview) display the converted image
     else if (selectedFile.file.type === "application/pdf" || convertedPreview) {
       return (
@@ -90,17 +93,21 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           />
         </div>
       );
-    } 
+    }
     // While converting, show a spinner and friendly text
     else if (loadingConversion) {
       return (
         <div className="flex flex-col items-center justify-center space-y-4">
           <FaSpinner className="animate-spin text-indigo-500 w-12 h-12" />
-          <p className="text-gray-600 text-lg font-semibold">Converting file...</p>
-          <p className="text-sm text-gray-400">Please wait while we process your file.</p>
+          <p className="text-gray-600 text-lg font-semibold">
+            Converting file...
+          </p>
+          <p className="text-sm text-gray-400">
+            Please wait while we process your file.
+          </p>
         </div>
       );
-    } 
+    }
     // In case conversion fails, display an error message
     else {
       return (
@@ -125,7 +132,8 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           </h2>
           {selectedFile?.file && (
             <p className="text-xs text-indigo-200 mt-1">
-              {selectedFile.file.type} • {(selectedFile.file.size / 1024).toFixed(1)} KB
+              {selectedFile.file.type} •{" "}
+              {(selectedFile.file.size / 1024).toFixed(1)} KB
             </p>
           )}
         </div>
@@ -133,7 +141,9 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           {convertedPreview && (
             <a
               href={convertedPreview}
-              download={`${selectedFile?.file?.name?.split(".")[0]}_converted.png`}
+              download={`${
+                selectedFile?.file?.name?.split(".")[0]
+              }_converted.png`}
               className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-100 transition"
             >
               <FaDownload />
@@ -141,7 +151,9 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
           )}
           <button
             onClick={() =>
-              openFileModal(files.findIndex((f) => f.preview === selectedFile.preview))
+              openFileModal(
+                files.findIndex((f) => f.preview === selectedFile.preview)
+              )
             }
             className="p-2 bg-white rounded-full text-indigo-600 hover:bg-indigo-100 transition"
           >
