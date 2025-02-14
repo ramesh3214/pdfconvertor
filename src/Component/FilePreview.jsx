@@ -95,7 +95,7 @@ const FilePreview = ({ selectedFile, openFileModal, files }) => {
         </div>
       );
     }
-    // While converting, show a spinner and friendly text
+    
     else if (loadingConversion) {
       return (
         <div className="flex flex-col items-center justify-center space-y-4">
